@@ -63,15 +63,6 @@ func init() {
 
     beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
         beego.ControllerComments{
-            Method: "Get",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
-        beego.ControllerComments{
             Method: "Put",
             Router: `/:uid`,
             AllowHTTPMethods: []string{"put"},
@@ -84,6 +75,24 @@ func init() {
             Method: "Delete",
             Router: `/:uid`,
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: `/:uid`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
+        beego.ControllerComments{
+            Method: "Loginop",
+            Router: `/login`,
+            AllowHTTPMethods: []string{"options"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -111,6 +120,24 @@ func init() {
             Method: "Feng",
             Router: `/user/feng`,
             AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
+        beego.ControllerComments{
+            Method: "Test2",
+            Router: `/user/feng`,
+            AllowHTTPMethods: []string{"options"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lianyun/controllers:UserController"] = append(beego.GlobalControllerRouter["lianyun/controllers:UserController"],
+        beego.ControllerComments{
+            Method: "Test1",
+            Router: `/user/list`,
+            AllowHTTPMethods: []string{"options"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

@@ -15,35 +15,8 @@ import (
 type UserController struct {
 	beego.Controller
 }
-// @Title GetAll
-// @Description get all Users
-// @Success 200 {object} models.User
-// @router /user/list [options]
-func (u *UserController)test1()  {
 
-	u.Data["json"] = map[string]string{"uid": "yangshen"}
-	u.ServeJSON()
-}
-// @Title GetAll
-// @Description fengyonghu
-// @Success 200 {object} models.User
-// @router /user/feng [options]
-func (u *UserController)test2()  {
-	u.Data["json"] = map[string]string{"uid": "yangshen"}
-	u.ServeJSON()
-}
-// @Title Login
-// @Description Logs user into the system
-// @Param	username		query 	string	true		"The username for login"
-// @Param	password		query 	string	true		"The password for login"
-// @Success 200 {string} login success
-// @Failure 403 user not exist
-// @router /login [options]
-func (u *UserController)test3()  {
-	u.Data["json"] = map[string]string{"uid": "yangshen"}
-	u.ServeJSON()
-}
-
+const allowHeaders = "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"
 // @Title CreateUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
@@ -54,6 +27,42 @@ func (u *UserController) Post() {
 	//var user models.User
 	//json.Unmarshal(u.Ctx.Input.RequestBody, &user)
 	//uid := models.AddUser(user)
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
+	u.Data["json"] = map[string]string{"uid": "yangshen"}
+	u.ServeJSON()
+}
+
+// @Title GetAll
+// @Description get all Users
+// @Success 200 {object} models.User
+// @router /user/list [options]
+func (u *UserController) Test1()  {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
+	u.Data["json"] = map[string]string{"uid": "yangshen"}
+	u.ServeJSON()
+}
+// @Title GetAll
+// @Description fengyonghu
+// @Success 200 {object} models.User
+// @router /user/feng [options]
+func (u *UserController) Test2()  {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
+	u.Data["json"] = map[string]string{"uid": "yangshen"}
+	u.ServeJSON()
+}
+// @Title Login
+// @Description Logs user into the system
+// @Param	username		query 	string	true		"The username for login"
+// @Param	password		query 	string	true		"The password for login"
+// @Success 200 {string} login success
+// @Failure 403 user not exist
+// @router /login [options]
+func (u *UserController) Loginop()  {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
 	u.Data["json"] = map[string]string{"uid": "yangshen"}
 	u.ServeJSON()
 }
@@ -63,7 +72,10 @@ func (u *UserController) Post() {
 // @Success 200 {object} models.User
 // @router /user/list [get]
 func (u *UserController) GetAll() {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
 	page, err := u.GetInt("page", 1)
+	status, err := u.GetInt("status", 1)
 	if err != nil {
 		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
 		u.ServeJSON()
@@ -73,9 +85,82 @@ func (u *UserController) GetAll() {
 	}
 	start := (page-1) *15
 	end := start + 15
-	var users []*models.User
+	var users []*models.StatisticsUser
 	o := orm.NewOrm()
-	qs := o.QueryTable("user")
+	err = o.Using("lianyun")
+	if err != nil{
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
+		u.ServeJSON()
+	}
+	qs := o.QueryTable("statistics_user")
+	switch status {
+	case 1:
+		qs = qs.OrderBy("-user_state")
+		break;
+	case 2:
+		qs = qs.OrderBy("user_state")
+		break;
+	case 3:
+		qs = qs.OrderBy("-user_refining")
+		break;
+	case 4:
+		qs = qs.OrderBy("user_refining")
+		break;
+	case 5:
+		qs = qs.OrderBy("chongzhinum")
+		break;
+	case 6:
+		qs = qs.OrderBy("-chongzhinum")
+		break;
+	case 7:
+		qs = qs.OrderBy("lingyunum")
+		break;
+	case 8:
+		qs = qs.OrderBy("-lingyunum")
+		break;
+	case 9:
+		qs = qs.OrderBy("yuanbaonum")
+		break;
+	case 10:
+		qs = qs.OrderBy("-yuanbaonum")
+		break;
+	case 11:
+		qs = qs.OrderBy("yinliangnum")
+		break;
+	case 12:
+		qs = qs.OrderBy("-yinliangnum")
+		break;
+	case 13:
+		qs = qs.OrderBy("shiwunum")
+		break;
+	case 14:
+		qs = qs.OrderBy("-shiwunum")
+		break;
+	case 15:
+		qs = qs.OrderBy("mucainum")
+		break;
+	case 16:
+		qs = qs.OrderBy("-mucainum")
+		break;
+	case 17:
+		qs = qs.OrderBy("caoyaonum")
+		break;
+	case 18:
+		qs = qs.OrderBy("-caoyaonum")
+		break;
+	case 19:
+		qs = qs.OrderBy("-jingtienum")
+		break;
+	case 20:
+		qs = qs.OrderBy("jingtienum")
+		break;
+	case 21:
+		qs = qs.OrderBy("fengyaota")
+		break;
+	case 22:
+		qs = qs.OrderBy("-fengyaota")
+		break;
+	}
 	count,err := qs.All(&users)
 	if err != nil {
 		logs.Error(err)
@@ -92,6 +177,8 @@ func (u *UserController) GetAll() {
 // @Success 200 {object} models.User
 // @router /user/feng [get]
 func (u *UserController)Feng()  {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
 	id,_ := u.GetInt("id")
 	userInfo := &models.User{}
 	userInfo.Id = id
@@ -179,6 +266,8 @@ func (u *UserController) Delete() {
 // @Failure 403 user not exist
 // @router /login [post]
 func (u *UserController) Login() {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
 	o := orm.NewOrm()
 	err := o.Using("lianyun")
 	if err != nil {
@@ -209,6 +298,8 @@ func (u *UserController) Login() {
 // @Success 200 {string} logout success
 // @router /logout [get]
 func (u *UserController) Logout() {
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
