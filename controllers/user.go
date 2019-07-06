@@ -7,6 +7,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"lianyun/helpers"
 	"lianyun/models"
+	"strconv"
 
 	"github.com/astaxie/beego"
 )
@@ -32,6 +33,65 @@ func (u *UserController) Post() {
 	u.Data["json"] = map[string]string{"uid": "yangshen"}
 	u.ServeJSON()
 }
+// @Title CreateUser
+// @Description create users
+// @Param	body		body 	models.User	true		"body for user content"
+// @Success 200 {int} models.User.Id
+// @Failure 403 body is empty
+// @router /getuser [options]
+func (u *UserController) Post1() {
+	//var user models.User
+	//json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	//uid := models.AddUser(user)
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
+	u.Data["json"] = map[string]string{"uid": "yangshen"}
+	u.ServeJSON()
+}
+
+// @Title CreateUser
+// @Description create users
+// @Param	body		body 	models.User	true		"body for user content"
+// @Success 200 {int} models.User.Id
+// @Failure 403 body is empty
+// @router /getuser [post]
+func (u *UserController) Getuser() {
+	//var user models.User
+	//json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	//uid := models.AddUser(user)
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
+	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
+	userInfo := &models.StatisticsUser{}
+	user_id, err := u.GetInt("user_id", 1)
+	logs.Info("user_id is " + strconv.Itoa(user_id))
+	if err != nil {
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
+		u.ServeJSON()
+	}
+	o := orm.NewOrm()
+	err = o.Using("lianyun")
+	if err != nil {
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"数据库错误"}
+		u.ServeJSON()
+	}
+	qs := o.QueryTable("statistics_user")
+	qs = qs.Filter("user_id", user_id)
+	err = qs.One(userInfo)
+	if err == orm.ErrMultiRows {
+		// 多条的时候报错
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"数据库错误"}
+		u.ServeJSON()
+	}
+	if err == orm.ErrNoRows {
+		// 没有找到记录
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"没有该用户"}
+		u.ServeJSON()
+	}
+	ulist := []*models.StatisticsUser{userInfo}
+	list := helpers.PageUtil(1 ,1, 15, ulist)
+	u.Data["json"] = map[string]interface{}{"code":200, "data":list, "msg":"查找成功"}
+	u.ServeJSON()
+}
 
 // @Title GetAll
 // @Description get all Users
@@ -40,7 +100,116 @@ func (u *UserController) Post() {
 func (u *UserController) Test1()  {
 	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Origin", "*")
 	u.Ctx.ResponseWriter.Header().Add("Access-Control-Allow-Headers", allowHeaders)
-	u.Data["json"] = map[string]string{"uid": "yangshen"}
+	page, err := u.GetInt("page", 1)
+	status, err := u.GetInt("status", 1)
+	if err != nil {
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
+		u.ServeJSON()
+	}
+	if page == 0 {
+		page = 1
+	}
+	start := (page-1) *15
+	end := start + 15
+	var users []*models.StatisticsUser
+	o := orm.NewOrm()
+	err = o.Using("lianyun")
+	if err != nil{
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
+		u.ServeJSON()
+	}
+	qs := o.QueryTable("statistics_user")
+
+	switch status {
+	case 1:
+		qs = qs.OrderBy("-user_state")
+		break;
+	case 2:
+		qs = qs.OrderBy("user_state")
+		break;
+	case 3:
+		qs = qs.OrderBy("-user_refining")
+		break;
+	case 4:
+		qs = qs.OrderBy("user_refining")
+		break;
+	case 5:
+		qs = qs.OrderBy("chongzhinum")
+		break;
+	case 6:
+		qs = qs.OrderBy("-chongzhinum")
+		break;
+	//case 7:
+	//	qs = qs.OrderBy("-")
+	//	break;
+	//case 8:
+	//	qs = qs.OrderBy("-chongzhinum")
+	//	break;
+	case 9:
+		qs = qs.OrderBy("lingyunum")
+		break;
+	case 10:
+		qs = qs.OrderBy("-lingyunum")
+		break;
+	case 11:
+		qs = qs.OrderBy("yuanbaonum")
+		break;
+	case 12:
+		qs = qs.OrderBy("-yuanbaonum")
+		break;
+	case 13:
+		qs = qs.OrderBy("yinliangnum")
+		break;
+	case 14:
+		qs = qs.OrderBy("-yinliangnum")
+		break;
+	case 15:
+		qs = qs.OrderBy("shiwunum")
+		break;
+	case 16:
+		qs = qs.OrderBy("-shiwunum")
+		break;
+	case 17:
+		qs = qs.OrderBy("mucainum")
+		break;
+	case 18:
+		qs = qs.OrderBy("-mucainum")
+		break;
+	case 19:
+		qs = qs.OrderBy("caoyaonum")
+		break;
+	case 20:
+		qs = qs.OrderBy("-caoyaonum")
+		break;
+	case 21:
+		qs = qs.OrderBy("-jingtienum")
+		break;
+	case 22:
+		qs = qs.OrderBy("jingtienum")
+		break;
+	case 23:
+		qs = qs.OrderBy("fengyaota")
+		break;
+	case 24:
+		qs = qs.OrderBy("-fengyaota")
+		break;
+	case 25:
+		qs = qs.OrderBy("user_id")
+		break;
+	case 26:
+		qs = qs.OrderBy("-user_id")
+		break;
+
+	}
+	count,err := qs.All(&users)
+	if err != nil {
+		logs.Error(err)
+		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
+		u.ServeJSON()
+	}
+	users = users[start:end]
+	list := helpers.PageUtil(int(count), page, 15, users)
+	u.Data["json"] = map[string]interface{}{"code":200, "data":list, "msg":"登录失败"}
 	u.ServeJSON()
 }
 // @Title GetAll
@@ -112,54 +281,67 @@ func (u *UserController) GetAll() {
 	case 6:
 		qs = qs.OrderBy("-chongzhinum")
 		break;
-	case 7:
+	//case 7:
+	//	qs = qs.OrderBy("-")
+	//	break;
+	//case 8:
+	//	qs = qs.OrderBy("-chongzhinum")
+	//	break;
+	case 9:
 		qs = qs.OrderBy("lingyunum")
 		break;
-	case 8:
+	case 10:
 		qs = qs.OrderBy("-lingyunum")
 		break;
-	case 9:
+	case 11:
 		qs = qs.OrderBy("yuanbaonum")
 		break;
-	case 10:
+	case 12:
 		qs = qs.OrderBy("-yuanbaonum")
 		break;
-	case 11:
+	case 13:
 		qs = qs.OrderBy("yinliangnum")
 		break;
-	case 12:
+	case 14:
 		qs = qs.OrderBy("-yinliangnum")
 		break;
-	case 13:
+	case 15:
 		qs = qs.OrderBy("shiwunum")
 		break;
-	case 14:
+	case 16:
 		qs = qs.OrderBy("-shiwunum")
 		break;
-	case 15:
+	case 17:
 		qs = qs.OrderBy("mucainum")
 		break;
-	case 16:
+	case 18:
 		qs = qs.OrderBy("-mucainum")
 		break;
-	case 17:
+	case 19:
 		qs = qs.OrderBy("caoyaonum")
 		break;
-	case 18:
+	case 20:
 		qs = qs.OrderBy("-caoyaonum")
 		break;
-	case 19:
+	case 21:
 		qs = qs.OrderBy("-jingtienum")
 		break;
-	case 20:
+	case 22:
 		qs = qs.OrderBy("jingtienum")
 		break;
-	case 21:
+	case 23:
 		qs = qs.OrderBy("fengyaota")
 		break;
-	case 22:
+	case 24:
 		qs = qs.OrderBy("-fengyaota")
 		break;
+	case 25:
+		qs = qs.OrderBy("user_id")
+		break;
+	case 26:
+		qs = qs.OrderBy("-user_id")
+		break;
+
 	}
 	count,err := qs.All(&users)
 	if err != nil {
@@ -198,6 +380,18 @@ func (u *UserController)Feng()  {
 	if err != nil{
 		u.Data["json"] = map[string]interface{}{"code":201, "data":"", "msg":"登录失败"}
 		u.ServeJSON()
+	}
+	err  = o.Using("lianyun")
+	if err != nil {
+		logs.Error(err)
+	}
+	statisticUser := &models.StatisticsUser{}
+	qs := o.QueryTable(statisticUser)
+	err = qs.Filter("user_id", id).One(statisticUser)
+	statisticUser.Status = userInfo.Status
+	num , err = o.Update(statisticUser)
+	if err != nil {
+		logs.Error(err)
 	}
 	u.Data["json"] = map[string]interface{}{"code":200, "data":num, "msg":"登录失败"}
 	u.ServeJSON()

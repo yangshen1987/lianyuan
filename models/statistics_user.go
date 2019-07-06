@@ -44,16 +44,17 @@ type StatisticsUser struct {
 	CreatedTime         time.Time `orm:"column(created_time);type(timestamp)" description:"创建时间"`
 	RewardTime          time.Time `orm:"column(reward_time);type(timestamp)"`
 	Status              int       `orm:"column(status)" description:"1正常2，封号"`
-	Chongzhinum         int       `orm:"column(chongzhinum)"`
-	Lingyunum           int       `orm:"column(lingyunum)"`
-	Yuanbaonum          int       `orm:"column(yuanbaonum)"`
-	Yinliangnum         int       `orm:"column(yinliangnum)"`
-	Shiwunum            int       `orm:"column(shiwunum)"`
-	Mucainum            int       `orm:"column(mucainum)"`
-	Caoyaonum           int       `orm:"column(caoyaonum)"`
-	Jingtienum          int       `orm:"column(jingtienum)"`
-	Fengyaota           int       `orm:"column(fengyaota)"`
+	Chongzhinum         int       `orm:"column(chongzhinum);null"`
+	Lingyunum           int       `orm:"column(lingyunum);null"`
+	Yuanbaonum          int       `orm:"column(yuanbaonum);null"`
+	Yinliangnum         int       `orm:"column(yinliangnum);null"`
+	Shiwunum            int       `orm:"column(shiwunum);null"`
+	Mucainum            int       `orm:"column(mucainum);null"`
+	Caoyaonum           int       `orm:"column(caoyaonum);null"`
+	Jingtienum          int       `orm:"column(jingtienum);null"`
+	Fengyaota           int       `orm:"column(fengyaota);null"`
 	UserId              int       `orm:"column(user_id)" description:"用户id "`
+	JueLv               int       `orm:"column(JueLv)"`
 }
 
 func (t *StatisticsUser) TableName() string {
